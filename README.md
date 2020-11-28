@@ -1,8 +1,6 @@
 ### Quickstart Guide
 
-The project has been created using Graphback. Run the project using the following steps:
-
-- Start the database
+Run the project using the following steps:
 
 ```
 docker-compose up -d
