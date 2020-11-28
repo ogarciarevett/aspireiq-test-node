@@ -1,20 +1,15 @@
+const { checkObj, handleError } = require("./utils");
 const FINDER = "_id";
 let statements = {};
 
-function generateUpdateStatement(document, mutation) {
+function generateUpdateStatement(document, mutations) {
+    console.log("mutations :", mutations);
     statements = {};
-    console.log("mutation :", mutation);
-    getStatements(document, mutation);
-
-    console.log("output: ", statements);
-    return statements;
-}
-
-function getStatements(document, mutations) {
     for (const key of Object.keys(mutations)) {
         checkObj(mutations);
         statements = deepCheck(mutations, document, null, key)
     }
+    console.log("output: ", statements);
     return statements;
 }
 
@@ -35,7 +30,7 @@ const deepCheck = (mutations, document, path, key) => {
             if(mutationLength > 1) {
                 return addStatement("$add", currentPath || key, [mutChild]);
             }
-             return addStatement("$add", currentPath || key, nextMutation);
+            return addStatement("$add", currentPath || key, nextMutation);
         }
         for (const [childMutKey, childMutValue] of Object.entries(mutChild)) {
             if(!Array.isArray(nextDocument)) {
@@ -55,14 +50,12 @@ const deepCheck = (mutations, document, path, key) => {
                                 // update if the key exists in that document
                                 if(k === docChildKey && docChild[k] && !mutChild._delete) {
                                     currentPath = buildPath(currentPath, docChild, k);
-                                    // Update
-                                    addStatement("$update", currentPath, v);
-                                    currentPath = "";
-                                    return;
+                                     addStatement("$update", currentPath, v);
+                                     currentPath = "";
+                                     return;
                                 } else if (mutChild._delete) {
                                     if(currentPath === j) {
                                         currentPath = buildPath(key, currentPath, j)
-                                        console.log(currentPath)
                                     }
                                     return addStatement("$remove", currentPath, true);
                                 }
@@ -82,16 +75,6 @@ function addStatement(cmd, path, mutation) {
         [path]: mutation
     }
     return statements;
-}
-
-function checkObj(child) {
-    if(!child || typeof child !== 'object') {
-        handleError(`The mutation -> '${child}' has a bad syntax or isn't a object, check the struct`);
-    }
-}
-
-function handleError(msg) {
-    throw new Error(msg);
 }
 
 module.exports = { generateUpdateStatement };
