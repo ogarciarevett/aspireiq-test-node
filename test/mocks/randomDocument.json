@@ -1,0 +1,30 @@
+{
+  "_id": 1,
+  "name": "Omar Garcia Twitch.tv",
+  "games": [
+    {
+      "_id": 2,
+      "title": "league of legends",
+      "players": []
+    },
+    {
+      "_id": 3,
+      "value": "valorant plays",
+      "players": [
+        {
+          "_id": 5,
+          "name": "hiko"
+        },
+        {
+          "_id": 6,
+          "name": "tenz"
+        }
+      ]
+    },
+    {
+      "_id": 4,
+      "value": "apex legends",
+      "players": []
+    }
+  ]
+}
