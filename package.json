@@ -1,0 +1,25 @@
+{
+  "version": "1.0.1",
+  "description": "Test aspireIQ - Omar Garcia",
+  "private": true,
+  "engines": {
+    "node": "^14.x"
+  },
+  "scripts": {
+    "start": "npm run test",
+    "watch": "npm run test -- --watch",
+    "test": "mocha"
+  },
+  "license": "Apache 2.0",
+  "devDependencies": {
+    "chai": "^4.2.0",
+    "eslint": "^7.14.0",
+    "eslint-config-airbnb-base": "^14.2.1",
+    "eslint-plugin-import": "^2.22.1",
+    "mocha": "^8.2.1"
+  },
+  "author": {
+    "name": "Omar Garcia",
+    "email": "ogarciarevett@gmail.com"
+  }
+}
