@@ -131,4 +131,85 @@ describe('statementGenerator', () => {
         expect(statements).to.eqls({ "$update": {"games.1.players.0.name": "hik0"}});
     });
 
+    it('The common remove should works with the original document', () => {
+        const statements = generateUpdateStatement(originalDocument, {
+            "posts": [
+                {
+                    "_id": 2,
+                    "_delete": true
+                }
+            ]
+        });
+
+        expect(statements).to.eqls({ "$remove" : {"posts.0" : true} });
+    });
+
+    it('The common remove should works with any document', () => {
+        const statements = generateUpdateStatement(randomDocument, {
+            "games": [
+                {
+                    "_id": 2,
+                    "_delete": true
+                }
+            ]
+        });
+
+        expect(statements).to.eqls({ "$remove" : {"games.0" : true} });
+    });
+
+    it('The nested remove should works with the original document', () => {
+        const statements = generateUpdateStatement(originalDocument, {
+            "posts": [
+                {
+                    "_id": 3,
+                    "mentions": [
+                        {
+                            "_id": 6,
+                            "text": "pear",
+                            "_delete": true
+                        }
+                    ]
+                }
+            ]
+        });
+
+        expect(statements).to.eqls({ "$remove" : {"posts.1.mentions.1": true}});
+    });
+
+    it('The nested remove should works with the any document', () => {
+        const statements = generateUpdateStatement(randomDocument, {
+            "games": [
+                {
+                    "_id": 3,
+                    "players": [
+                        {
+                            "_id": 5,
+                            "_delete": true
+                        }
+                    ]
+                }
+            ]
+        });
+
+        expect(statements).to.eqls({ "$remove" : {"games.1.players.0": true}});
+    });
+
+    it('Multiple mutations should returns multiple statements ', () => {
+        const statements = generateUpdateStatement(originalDocument, {
+                "posts": [
+                    {"_id": 2, "value": "too"},
+                    {"value": "four"},
+                    {"_id": 4, "_delete": true}
+                ]
+            }
+        );
+
+        expect(statements).to.eqls({
+                "$update": {"posts.0.value": "too"},
+                "$add": {"posts": [{"value": "four"}] },
+                "$remove" : {"posts.2" : true}
+            }
+        );
+    });
+
 });
