@@ -51,6 +51,18 @@ const deepCheck = (mutations, document, path, key) => {
                     for (const [docChildKey, docChildValue] of Object.entries(docChild)) {
                         if (Array.isArray(docChildValue) && docChildValue.length) {
                             deepCheck(mutChild[docChildKey], docChildValue, currentPath, docChildKey);
+                        } else {
+                            const { _id, ...rest } = mutChild;
+                            for (const [k, v] of Object.entries(rest)) {
+                                // update if the key exists in that document
+                                if(k === docChildKey && docChild[k] && !mutChild._delete) {
+                                    currentPath = buildPath(currentPath, docChild, k);
+                                    // Update
+                                    addStatement("$update", currentPath, v);
+                                    currentPath = "";
+                                    return;
+                                }
+                            }
                         }
                     }
                 }
