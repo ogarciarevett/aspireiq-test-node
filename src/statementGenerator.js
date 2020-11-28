@@ -34,8 +34,6 @@ const deepCheck = (mutations, document, path, key) => {
         if(!mutChild[FINDER]) {
             if(mutationLength > 1) {
                 return addStatement("$add", currentPath || key, [mutChild]);
-                // return addStatement("$add", currentPath || key, nextMutation);
-
             }
              return addStatement("$add", currentPath || key, nextMutation);
         }
@@ -61,6 +59,12 @@ const deepCheck = (mutations, document, path, key) => {
                                     addStatement("$update", currentPath, v);
                                     currentPath = "";
                                     return;
+                                } else if (mutChild._delete) {
+                                    if(currentPath === j) {
+                                        currentPath = buildPath(key, currentPath, j)
+                                        console.log(currentPath)
+                                    }
+                                    return addStatement("$remove", currentPath, true);
                                 }
                             }
                         }
